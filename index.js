@@ -2,12 +2,14 @@ let playerScore = 0;
 let computerScore = 0;
 let rounds = 0;
 let humanChoice = ""
+let battleStory = ""
 
 const start = document.querySelector(".start").addEventListener("click", playGame)
 const playerScoreLive = document.querySelector(".player")
 const cpuScoreLive = document.querySelector(".cpu")
 const header = document.querySelector("h1")
 const liveRounds = document.querySelector(".round")
+const cpuChoiceDisplay = document.querySelector(".cpu-choice")
 
 function getComputerChoice(){
     const ans = ["rock", "paper", "scissors"];
@@ -15,18 +17,14 @@ function getComputerChoice(){
     return ans[randomNumber]
 }
 
+function handleClick(e){
+    humanChoice = e.target.innerText
+    const cpuChoice = getComputerChoice()
+    cpuChoiceDisplay.innerHTML = ` cpu chose ${cpuChoice} and you chose ${humanChoice.toLowerCase()}`
+    playRound(cpuChoice, humanChoice.toLowerCase())
+}
 
-const choices = document.querySelectorAll(".choice")
-choices.forEach(choice => {
-    choice.addEventListener("click", (e) => {
-        humanChoice = e.target.innerText
-        playRound(getComputerChoice, humanChoice.toLowerCase())
-    })
-})
-
-function playRound(compChoice, playerChoice){
-
-    const cpuChoice = compChoice();
+function playRound(cpuChoice, playerChoice){
     if(playerChoice === "rock" && cpuChoice === "scissors"){
         playerScore++;
         rounds++
@@ -72,6 +70,11 @@ function playRound(compChoice, playerChoice){
 }
 
 function playGame(){
+    const choices = document.querySelectorAll(".choice")
+    choices.forEach(choice => {
+        choice.addEventListener("click", handleClick)
+    })
+
     if(humanChoice.length === 0 && rounds === 0){
         header.innerHTML = "Please select one of the options."
     }
@@ -85,6 +88,11 @@ function resetGame(){
     playerScoreLive.innerHTML = `Player score: 0`
     cpuScoreLive.innerHTML = `Cpu score: 0`
     liveRounds.innerHTML = `Round: 0`
+    cpuChoiceDisplay.innerHTML = ""
+    const choices = document.querySelectorAll(".choice")
+    choices.forEach(choice => {
+        choice.removeEventListener("click", handleClick)
+    })
     setTimeout(() => {
         document.querySelector("h1").innerHTML = "Rock Paper Scissors"
     }, 700)
