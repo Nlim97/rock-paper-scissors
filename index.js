@@ -1,64 +1,92 @@
-const ans = ["rock", "paper", "scissors"];
-const randomNumber = Math.floor(Math.random() * 3);
 let playerScore = 0;
 let computerScore = 0;
 let rounds = 0;
-function getComputerChoice(arr, num){
-    return arr[num];
-}
-function getHumanChoice(){
-    const humanChoice = prompt("Enter your choice here: ").toLowerCase();
-    if(humanChoice !== "rock" && humanChoice !== "paper" && humanChoice !== "scissors"){
-        alert("Enter rock, paper or scissors")
-    }
-    return humanChoice;
+let humanChoice = ""
+
+const start = document.querySelector(".start").addEventListener("click", playGame)
+const playerScoreLive = document.querySelector(".player")
+const cpuScoreLive = document.querySelector(".cpu")
+const header = document.querySelector("h1")
+const liveRounds = document.querySelector(".round")
+
+function getComputerChoice(){
+    const ans = ["rock", "paper", "scissors"];
+    const randomNumber = Math.floor(Math.random() * 3)
+    return ans[randomNumber]
 }
 
-function playRound(compChoice, humanChoice){
-    const playerChoice = humanChoice();
-    const cpuChoice = compChoice(ans, randomNumber);
+
+const choices = document.querySelectorAll(".choice")
+choices.forEach(choice => {
+    choice.addEventListener("click", (e) => {
+        humanChoice = e.target.innerText
+        playRound(getComputerChoice, humanChoice.toLowerCase())
+    })
+})
+
+function playRound(compChoice, playerChoice){
+
+    const cpuChoice = compChoice();
     if(playerChoice === "rock" && cpuChoice === "scissors"){
         playerScore++;
-        console.log("you win")
+        rounds++
+        header.innerHTML = "You win"
     }else if (playerChoice === "scissors" && cpuChoice === "rock"){
         computerScore++;
-        console.log("cpu wins")
         rounds++
+        header.innerHTML = "Cpu wins"
     }else if(playerChoice === "paper" && cpuChoice === "rock"){
         playerScore++;
-        console.log("you win")
         rounds++
+        header.innerHTML = "You win"
     }else if(playerChoice === "rock" && cpuChoice === "paper"){
         computerScore++;
-        console.log("cpu wins")
         rounds++
+        header.innerHTML = "Cpu wins"
     }else if(playerChoice === "scissors" && cpuChoice === "paper"){
         playerScore++;
-        console.log("you win")
         rounds++
+        header.innerHTML = "You win"
     }else if(playerChoice === "paper" && cpuChoice === "scissors"){
         computerScore++;
-        console.log("cpu wins")
         rounds++
+        header.innerHTML = "Cpu wins"
     }else if(playerChoice === cpuChoice){
-        console.log("draw")
         rounds++
+        header.innerHTML = "Draw"
+    }
+    playerScoreLive.innerHTML = `Player score: ${playerScore}`
+    cpuScoreLive.innerHTML = `Cpu score: ${computerScore}`
+    liveRounds.innerHTML = `Round: ${rounds}`
+    if(rounds === 5){
+        if(playerScore > computerScore){
+            header.innerHTML = "player wins game"
+        }else if(computerScore > playerScore){
+            header.innerHTML = "computer wins game"
+        }else{
+            header.innerHTML = "Draw!! no winner" 
+        }
+        resetGame()
     }
 
 }
 
 function playGame(){
-    for(let i = 0; i < 5; i++){
-        playRound(getComputerChoice, getHumanChoice)
-    }
-    if(playerScore > computerScore){
-        console.log("player wins game")
-    }else if(computerScore > playerScore){
-        console.log("computer wins game")
-    }else{
-        console.log("Draw!! no winner")
+    if(humanChoice.length === 0 && rounds === 0){
+        header.innerHTML = "Please select one of the options."
     }
 }
-    
 
-playGame();
+function resetGame(){
+    playerScore = 0;
+    computerScore = 0;
+    rounds = 0;
+    humanChoice = ""
+    playerScoreLive.innerHTML = `Player score: 0`
+    cpuScoreLive.innerHTML = `Cpu score: 0`
+    liveRounds.innerHTML = `Round: 0`
+    setTimeout(() => {
+        document.querySelector("h1").innerHTML = "Rock Paper Scissors"
+    }, 700)
+}
+
